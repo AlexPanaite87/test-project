@@ -37,5 +37,9 @@ return [
 
     'youtube' => [
         'key' => env('YOUTUBE_API_KEY'),
+    ],
+
+    'ai' => [
+        'key' => env('AI_API_KEY'),
     ]
 ];

@@ -10,7 +10,7 @@ class YouTubeClient
     public function searchVideo(string $productName): ?array
     {
         $apiKey = config('services.youtube.key');
-        $cacheKey = 'youtube_search_' . md5($productName);
+        $cacheKey = 'youtube_search_top5_' . md5($productName);
         return Cache::remember($cacheKey, now()->addHours(24), function () use ($apiKey, $productName) {
             $keywords = ['trailer', 'gameplay', 'official trailer'];
             $randomKeyword = $keywords[array_rand($keywords)];
@@ -20,12 +20,12 @@ class YouTubeClient
                     'part' => 'snippet',
                     'q' => "{$productName} {$randomKeyword}",
                     'type' => 'video',
-                    'maxResults' => 1,
+                    'maxResults' => 5,
                     'key' => $apiKey,
                 ]);
 
             if ($response->successful() && !empty($response->json('items'))) {
-                return $response->json('items')[0];
+                return $response->json('items');
             }
 
             return null;
