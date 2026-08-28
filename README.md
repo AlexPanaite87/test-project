@@ -1,58 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# YouTube AI Video Verifier
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Acest proiect este o aplicație backend robustă, construită în Laravel, concepută pentru a căuta automat videoclipuri pe YouTube (trailere, gameplay) pe baza metadatelor produselor și pentru a valida rezultatele folosind un agent AI (Google Gemini).
 
-## About Laravel
+## Funcționalități
+- **Căutare automată pe YouTube:** Folosește YouTube Data API v3 pentru a prelua videoclipuri candidate pe baza numelui și categoriei produsului.
+- **Verificare AI (Gemini):** Se integrează cu modelul Gemini pentru a selecta determinist cea mai bună potrivire oficială, oferind un scor de acuratețe și o explicație text clară.
+- **Procesare Asincronă:** Căutarea videoclipurilor și validarea AI sunt procesate în fundal (Background Jobs & Queues), asigurând o interfață fluidă, care nu se blochează.
+- **Reziliență și Optimizare:** Implementează logică de retry pentru API-uri, sistem de cache și rate limiting pentru a preveni epuizarea cotei de interogări (quota limit).
+- **UX și Transparență:** Interfața afișează clar motivele deciziilor luate de AI, lista candidaților analizați și oferă utilizatorului opțiunea de manual override.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Cerințe preliminare
+- **Docker Desktop** - Necesar pentru rularea complet izolată în containere a proiectului, fără necesitatea instalării locale a limbajului PHP, a managerului Composer sau a unui server web.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalare și Configurare
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+1. **Se clonează repository-ul:**
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/AlexPanaite87/test-project
+cd test-project
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. **Instalarea dependențelor Composer:**
+   Deoarece proiectul utilizează Laravel Sail (Docker), se pot instala dependențele inițiale folosind un container temporar:
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php85-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
-## Contributing
+3. **Configurarea variabilelor de mediu (.env):**
+   Se copiază fișierul de exemplu:
+```bash
+cp .env.example .env
+```
+Se deschide fișierul `.env` și se adaugă cheile API (cheile proprii sau cele furnizate):
+```env
+YOUTUBE_API_KEY="..."
+AI_API_KEY="..."
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Pornirea containerelor Docker:**
+```bash
+./vendor/bin/sail up -d
+```
 
-## Code of Conduct
+5. **Generarea cheii aplicației:**
+```bash
+./vendor/bin/sail artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. **Rularea migrărilor și importul inițial de date (Seeding):**
+   Această comandă va construi structura relațională a tabelelor în baza de date. Pentru popularea inițială cu produse, aveți la dispoziție două opțiuni, în funcție de preferință:
 
-## Security Vulnerabilities
+* **Opțiunea A (Default Seeder):**
+  Populează baza de date folosind setul predefinit de date din cod.
+```bash
+./vendor/bin/sail artisan migrate --seed
+```
+* **Opțiunea B (Import CSV):**
+  Populează baza de date citind structura și produsele direct din fișierul extern products.csv.
+```bash
+./vendor/bin/sail artisan migrate: --seed --class=CsvSeeder
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Pornirea aplicației
 
-## License
+Pentru ca aplicația să funcționeze corect, sarcinile asincrone (apelurile API, verificarea AI) trebuie procesate. Se va porni workerul pentru coada de așteptare într-un tab nou de terminal:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+./vendor/bin/sail artisan queue:work --timeout=180
+```
+
+Acum aplicația poate fi accesată în browser la adresa: **http://localhost**.
+
+## Testare
+
+Proiectul include teste unitare și de integrare pentru a verifica persistența în baza de date, parsarea JSON a răspunsurilor AI și funcționarea corectă a joburilor asincrone din Queue.
+
+Pentru a rula suita de teste, se folosește comanda:
+```bash
+./vendor/bin/sail artisan test
+```
+
+## Arhitectură
+- **App/Http/Controllers/ProductController:** Gestionează cererile HTTP, filtrarea listei, paginarea și trimiterea sarcinilor către coadă.
+- **App/Models/Product & VideoCandidate:** Modelele Eloquent care definesc structura datelor și relația hasMany dintre un produs și candidații săi, și anume videourile de pe YouTube.
+- **App/Services/YouTubeClient:** Extrage logica de comunicare cu YouTube Data API v3, ocupându-se de construirea query-urilor.
+- **App/Services/AiVerifier:** Construiește promptul determinist, trimite datele către Gemini API și parsează răspunsul JSON pentru a extrage verdictul și scorul.
+- **App/Jobs/SearchYoutubeAndVerifyJob:** Încapsulează întregul proces (căutare + verificare + salvare) într-un job asincron, garantând un timp de răspuns instantaneu în UI.

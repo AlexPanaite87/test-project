@@ -7,6 +7,7 @@ use App\Models\VideoCandidate;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AiVerifier
 {
@@ -63,7 +64,7 @@ class AiVerifier
         for ($i = 0; $i < $maxRetries; $i++) {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->timeout(60)->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=' . $apiKey, [
+            ])->timeout(60)->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=' . $apiKey, [
                 'contents' => [
                     ['parts' => [['text' => $prompt]]]
                 ],
@@ -90,7 +91,12 @@ class AiVerifier
         }
 
         if ($response && !$response->successful()) {
-            dd('API Error:', $response->status(), $response->json());
+            Log::error('Gemini API Error', [
+                'status' => $response->status(),
+                'body' => $response->json()
+            ]);
+
+            throw new \RuntimeException('Gemini API failed with status: ' . $response->status());
         }
 
         return null;

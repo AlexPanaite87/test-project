@@ -2,21 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $this->call([
-            ProductSeeder::class,
-        ]);
+        $products = [
+            ['name' => 'SCUM Danny Trejo Character Pack', 'category' => 'PC Digital'],
+            ['name' => 'Super Loco World Cozy Train Automation', 'category' => 'PC Digital'],
+            ['name' => 'WUCHANG: Fallen Feathers', 'category' => 'PC Digital'],
+            ['name' => 'Cyberpunk 2077', 'category' => 'PC Digital'],
+            ['name' => 'Red Dead Redemption 2', 'category' => 'PC Digital'],
+        ];
+
+        foreach ($products as $product) {
+            Product::query()->create($product);
+        }
     }
 }
