@@ -8,7 +8,7 @@ Acest proiect este o aplicație backend robustă, construită în Laravel, conce
 - **Procesare Asincronă:** Căutarea videoclipurilor și validarea AI sunt procesate în fundal (Background Jobs & Queues), asigurând o interfață fluidă, care nu se blochează.
 - **Reziliență și Optimizare:** Implementează logică de retry pentru API-uri, sistem de cache și rate limiting pentru a preveni epuizarea cotei de interogări (quota limit).
 - **UX și Transparență:** Interfața afișează clar motivele deciziilor luate de AI, lista candidaților analizați și oferă utilizatorului opțiunea de manual override.
-
+- **Istoric și Audit Log:** Păstrează trasabilitatea completă a căutărilor (inclusiv payload-urile brute), prin intermediul unui dashboard dedicat revizuirii tuturor evaluărilor efectuate de AI.
 ## Cerințe preliminare
 - **Docker Desktop** - Necesar pentru rularea complet izolată în containere a proiectului, fără necesitatea instalării locale a limbajului PHP, a managerului Composer sau a unui server web.
 
@@ -63,7 +63,7 @@ AI_API_KEY="..."
 * **Opțiunea B (Import CSV):**
   Populează baza de date citind structura și produsele direct din fișierul extern products.csv.
 ```bash
-./vendor/bin/sail artisan migrate: --seed --class=CsvSeeder
+./vendor/bin/sail artisan migrate:fresh --seed --seeder=CsvSeeder
 ```
 
 ## Pornirea aplicației
@@ -86,8 +86,9 @@ Pentru a rula suita de teste, se folosește comanda:
 ```
 
 ## Arhitectură
-- **App/Http/Controllers/ProductController:** Gestionează cererile HTTP, filtrarea listei, paginarea și trimiterea sarcinilor către coadă.
-- **App/Models/Product & VideoCandidate:** Modelele Eloquent care definesc structura datelor și relația hasMany dintre un produs și candidații săi, și anume videourile de pe YouTube.
-- **App/Services/YouTubeClient:** Extrage logica de comunicare cu YouTube Data API v3, ocupându-se de construirea query-urilor.
-- **App/Services/AiVerifier:** Construiește promptul determinist, trimite datele către Gemini API și parsează răspunsul JSON pentru a extrage verdictul și scorul.
-- **App/Jobs/SearchYoutubeAndVerifyJob:** Încapsulează întregul proces (căutare + verificare + salvare) într-un job asincron, garantând un timp de răspuns instantaneu în UI.
+- **ProductController:** Gestionează cererile HTTP, filtrarea listei, paginarea și trimiterea sarcinilor către coadă.
+- **Product & VideoCandidate:** Modelele Eloquent care definesc structura datelor și relația hasMany dintre un produs și candidații săi, și anume videourile de pe YouTube.
+- **YouTubeClient:** Extrage logica de comunicare cu YouTube Data API v3, ocupându-se de construirea query-urilor.
+- **AiVerifier:** Construiește promptul determinist, trimite datele către Gemini API și parsează răspunsul JSON pentru a extrage verdictul și scorul.
+- **SearchYoutubeAndVerifyJob:** Încapsulează întregul proces (căutare + verificare + salvare) într-un job asincron, garantând un timp de răspuns instantaneu în UI.
+- **AuditController:** Gestionează afișarea jurnalului de audit, oferind o interfață dedicată pentru trasabilitatea deciziilor AI-ului.

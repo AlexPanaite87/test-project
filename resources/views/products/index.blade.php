@@ -22,9 +22,17 @@
             Show no videos only
         </label>
 
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Apply filter</button>
-        <a href="{{ route('products.index') }}" class="text-gray-500 hover:underline">Reset</a>
-    </form>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
+            Apply filter
+        </button>
+
+        <a href="{{ route('products.index') }}" class="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors">
+            Reset
+        </a>
+
+        <a href="{{ route('audit.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
+            View Audit Log
+        </a>    </form>
 
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
@@ -154,7 +162,7 @@
         if (pendingItems.length > 0) {
             setTimeout(() => {
                 window.location.reload();
-            }, 5000);
+            }, 3000);
         }
     });
 

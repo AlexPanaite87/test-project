@@ -46,7 +46,7 @@ class AiVerifier
 
         Your task:
         1. Analyze each candidate.
-        2. Choose a single "best match" that best represents the official trailer or gameplay presentation. Prioritize official channels, and titles containing 'Official Trailer', 'Launch Trailer', etc.
+        2. Choose a single "best match" that best represents the official trailer or gameplay presentation. Prioritize popular channels, and titles containing 'Official Trailer', 'Launch Trailer', etc.
         3. If none of the candidates are a good match, set "verified" to false.
 
         Answer STRICTLY in valid JSON format with the following structure:
@@ -64,7 +64,7 @@ class AiVerifier
         for ($i = 0; $i < $maxRetries; $i++) {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->timeout(60)->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=' . $apiKey, [
+            ])->timeout(60)->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=' . $apiKey, [
                 'contents' => [
                     ['parts' => [['text' => $prompt]]]
                 ],
