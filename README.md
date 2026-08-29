@@ -11,7 +11,7 @@ Acest proiect este o aplicație backend robustă, construită în Laravel, conce
 - **Istoric și Audit Log:** Păstrează trasabilitatea completă a căutărilor prin intermediul unui dashboard dedicat revizuirii tuturor evaluărilor efectuate de AI.
 ## Cerințe preliminare
 - **Docker Desktop** - Necesar pentru rularea complet izolată în containere a proiectului, fără necesitatea instalării locale a limbajului PHP, a managerului Composer sau a unui server web.
-
+- **Pentru utilizatorii Windows**: Se recomandă folosirea unui terminal WSL2 și clonarea proiectului exclusiv în interiorul sistemului de fișiere Linux.
 ## Instalare și Configurare
 
 1. **Se clonează repository-ul:**
