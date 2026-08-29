@@ -8,7 +8,7 @@ Acest proiect este o aplicație backend robustă, construită în Laravel, conce
 - **Procesare Asincronă:** Căutarea videoclipurilor și validarea AI sunt procesate în fundal (Background Jobs & Queues), asigurând o interfață fluidă, care nu se blochează.
 - **Reziliență și Optimizare:** Implementează logică de retry pentru API-uri, sistem de cache și rate limiting pentru a preveni epuizarea cotei de interogări (quota limit).
 - **UX și Transparență:** Interfața afișează clar motivele deciziilor luate de AI, lista candidaților analizați și oferă utilizatorului opțiunea de manual override.
-- **Istoric și Audit Log:** Păstrează trasabilitatea completă a căutărilor (inclusiv payload-urile brute), prin intermediul unui dashboard dedicat revizuirii tuturor evaluărilor efectuate de AI.
+- **Istoric și Audit Log:** Păstrează trasabilitatea completă a căutărilor prin intermediul unui dashboard dedicat revizuirii tuturor evaluărilor efectuate de AI.
 ## Cerințe preliminare
 - **Docker Desktop** - Necesar pentru rularea complet izolată în containere a proiectului, fără necesitatea instalării locale a limbajului PHP, a managerului Composer sau a unui server web.
 

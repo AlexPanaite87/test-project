@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Product;
-use App\Models\VideoCandidate;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -46,7 +45,7 @@ class AiVerifier
 
         Your task:
         1. Analyze each candidate.
-        2. Choose a single "best match" that best represents the official trailer or gameplay presentation. Prioritize popular channels, and titles containing 'Official Trailer', 'Launch Trailer', etc.
+        2. Choose a single "best match" that best represents the official trailer or gameplay presentation. Prioritize official channels, and titles containing 'Official Trailer', 'Launch Trailer', etc.
         3. If none of the candidates are a good match, set "verified" to false.
 
         Answer STRICTLY in valid JSON format with the following structure:

@@ -15,8 +15,8 @@ class CsvSeeder extends Seeder
 
         while (($data = fgetcsv($csvFile)) !== false) {
             Product::query()->create([
-                'name' => $data[0],
-                'category' => $data[1],
+                'name' => $data[1],
+                'category' => $data[2],
             ]);
         }
 
